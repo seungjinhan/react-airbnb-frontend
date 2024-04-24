@@ -73,13 +73,12 @@ export default function Root() {
                   />
                   <Input placeholder='Password' variant={"filled"} />
                 </InputGroup>
+                <Button mt={4} w='100%' colorScheme='red'>
+                  Log in
+                </Button>
               </VStack>
             </ModalBody>
-            <ModalFooter>
-              <Button w='100%' colorScheme='red'>
-                Log in
-              </Button>
-            </ModalFooter>
+            <ModalFooter></ModalFooter>
           </ModalContent>
         </Modal>
       </HStack>
