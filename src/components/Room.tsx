@@ -35,8 +35,8 @@ export default function Room() {
             Tagaytay and clear blue beaches of Nasugbu
           </Text>
           <Box>
-            <HStack spacing={1}>
-              <FaStar size={15} />
+            <HStack spacing={1} alignItems={"center"}>
+              <FaStar size={12} />
               <Text> 5.0</Text>
             </HStack>
           </Box>
