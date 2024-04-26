@@ -1,11 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
-import { getRoom } from "../api";
+import { getRoom, getRoomReviews } from "../api";
 import {
   Avatar,
   AvatarBadge,
   Box,
+  Container,
   Grid,
   GridItem,
   Heading,
@@ -16,13 +17,20 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { IRoomDetail } from "../types";
+import { IRoomDetail, IRoomReviews } from "../types";
+import { FaStar } from "react-icons/fa";
 
 export default function RoomDetail() {
   const { roomPk } = useParams();
   const { isLoading, data } = useQuery<IRoomDetail>({
     queryKey: ["room", roomPk],
     queryFn: getRoom,
+  });
+  const { isLoading: reviewsIsLoading, data: reviewsData } = useQuery<
+    IRoomReviews[]
+  >({
+    queryKey: ["reviews", roomPk],
+    queryFn: getRoomReviews,
   });
   return (
     <Box m={10} px={{ base: 10, lg: 40 }}>
@@ -57,17 +65,23 @@ export default function RoomDetail() {
         ))}
       </Grid>
       <HStack width={"40%"} justifyContent={"space-between"} mt={10}>
-        <VStack>
-          <Heading fontSize={"2xl"}>House hosted by {data?.owner.name}</Heading>
-          <HStack justifyContent={"flex-start"} w={"100%"}>
-            <Text>
-              {data?.toilets} toliet{data?.toilets === 1 ? "" : "s"}
-            </Text>
-            <Text>.</Text>
-            <Text>
-              {data?.rooms} room{data?.rooms === 1 ? "" : "s"}
-            </Text>
-          </HStack>
+        <VStack alignItems={"flex-start"}>
+          <Skeleton isLoaded={!isLoading}>
+            <Heading fontSize={"2xl"}>
+              House hosted by {data?.owner.name}
+            </Heading>
+          </Skeleton>
+          <Skeleton isLoaded={!isLoading}>
+            <HStack justifyContent={"flex-start"} w={"100%"}>
+              <Text>
+                {data?.toilets} toliet{data?.toilets === 1 ? "" : "s"}
+              </Text>
+              <Text>.</Text>
+              <Text>
+                {data?.rooms} room{data?.rooms === 1 ? "" : "s"}
+              </Text>
+            </HStack>
+          </Skeleton>
         </VStack>
         <Stack>
           <Avatar name={data?.owner.name} size={"lg"} src={data?.owner.avatar}>
@@ -75,6 +89,39 @@ export default function RoomDetail() {
           </Avatar>
         </Stack>
       </HStack>
+      <Box mt={10}>
+        <Heading mb={5} fontSize={"2xl"}>
+          <HStack>
+            <FaStar /> <Text> {data?.rating}</Text> .{" "}
+            <Text>
+              {reviewsData?.length} review{reviewsData?.length === 1 ? "" : "s"}
+            </Text>
+          </HStack>
+        </Heading>
+        <Container mt={16} maxW={"container.lg"} marginX={"none"}>
+          <Grid gap={10} templateColumns={"1fr 1fr"}>
+            {reviewsData?.map((review, index) => (
+              <VStack alignItems={"flex-start"} key={index}>
+                <HStack>
+                  <Avatar
+                    name={review.user.name}
+                    src={review.user.avatar}
+                    size={"md"}
+                  />
+                  <VStack spacing={0} alignItems={"flex-start"}>
+                    <Heading fontSize={"md"}>{review.user.name}</Heading>
+                    <HStack spacing={1}>
+                      <FaStar size={"12px"} />
+                      <Text>{review.rating}</Text>
+                    </HStack>
+                  </VStack>
+                </HStack>
+                <Text>{review.payload}</Text>
+              </VStack>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
     </Box>
   );
 }

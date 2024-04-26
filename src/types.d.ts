@@ -26,6 +26,11 @@ export interface IAmenity {
   description: string;
 }
 
+export interface IRoomReviews {
+  user: IRoomOwner;
+  payload: string;
+  rating: number;
+}
 export interface IRoomDetail extends IRoomList {
   created_at: string;
   updated_at: string;
