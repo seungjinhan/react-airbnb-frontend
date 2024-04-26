@@ -3,12 +3,18 @@ import { useQuery } from "@tanstack/react-query";
 
 import { getRoom } from "../api";
 import {
+  Avatar,
+  AvatarBadge,
   Box,
   Grid,
   GridItem,
   Heading,
+  HStack,
   Image,
   Skeleton,
+  Stack,
+  Text,
+  VStack,
 } from "@chakra-ui/react";
 import { IRoomDetail } from "../types";
 
@@ -50,6 +56,25 @@ export default function RoomDetail() {
           </GridItem>
         ))}
       </Grid>
+      <HStack width={"40%"} justifyContent={"space-between"} mt={10}>
+        <VStack>
+          <Heading fontSize={"2xl"}>House hosted by {data?.owner.name}</Heading>
+          <HStack justifyContent={"flex-start"} w={"100%"}>
+            <Text>
+              {data?.toilets} toliet{data?.toilets === 1 ? "" : "s"}
+            </Text>
+            <Text>.</Text>
+            <Text>
+              {data?.rooms} room{data?.rooms === 1 ? "" : "s"}
+            </Text>
+          </HStack>
+        </VStack>
+        <Stack>
+          <Avatar name={data?.owner.name} size={"lg"} src={data?.owner.avatar}>
+            <AvatarBadge boxSize={"1.25em"} bg={"green.500"} />
+          </Avatar>
+        </Stack>
+      </HStack>
     </Box>
   );
 }
