@@ -17,3 +17,5 @@ export const getRoomReviews = ({ queryKey }: QueryFunctionContext) =>
   call.get(`rooms/${queryKey[1]}/reviews`).then((res) => res.data);
 
 export const getMe = () => call.get(`users/me`).then((res) => res.data);
+
+export const logout = () => call.post(`users/log-out`).then((res) => res.data);
