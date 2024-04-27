@@ -1,6 +1,6 @@
 import { QueryFunctionContext } from "@tanstack/react-query";
 import axios from "axios";
-
+import Cookie from "js-cookie";
 const BASE_URL = "http://localhost:8000/api/v1";
 
 const call = axios.create({
@@ -18,4 +18,11 @@ export const getRoomReviews = ({ queryKey }: QueryFunctionContext) =>
 
 export const getMe = () => call.get(`users/me`).then((res) => res.data);
 
-export const logout = () => call.post(`users/log-out`).then((res) => res.data);
+export const logout = () =>
+  call
+    .post(`users/log-out`, null, {
+      headers: {
+        "X-CSRFToken": Cookie.get("csrftoken") || "",
+      },
+    })
+    .then((res) => res.data);
