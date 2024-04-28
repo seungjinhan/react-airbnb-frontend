@@ -11,6 +11,7 @@ export default function Home() {
     queryKey: ["rooms"],
     queryFn: getRooms,
   });
+
   return (
     <Grid
       mt={10}
