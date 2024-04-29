@@ -69,14 +69,12 @@ export const usernameLogin = ({
   username,
   password,
 }: IUsernameLoginVariables) =>
-  call
-    .post(
-      `/users/log-in`,
-      { username, password },
-      {
-        headers: {
-          "X-CSRFToken": Cookie.get("csrftoken") || "",
-        },
-      }
-    )
-    .then((res) => res.data);
+  call.post(
+    `/users/log-in`,
+    { username, password },
+    {
+      headers: {
+        "X-CSRFToken": Cookie.get("csrftoken") || "",
+      },
+    }
+  );

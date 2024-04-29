@@ -10,6 +10,7 @@ import {
   MenuItem,
   MenuList,
   Stack,
+  ToastId,
   useColorMode,
   useColorModeValue,
   useDisclosure,
@@ -20,7 +21,8 @@ import LoginModal from "./LoginModal";
 import SignUpModal from "./SignUpModal";
 import useUser from "../lib/useUser";
 import { logout } from "../api";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRef } from "react";
 
 export default function Header() {
   const { userLoading, isLoggedId, user } = useUser();
@@ -41,18 +43,44 @@ export default function Header() {
   const Icon = useColorModeValue(FaMoon, FaSun);
   const toast = useToast();
   const queryClient = useQueryClient();
+  const toastId = useRef<ToastId>();
 
-  const logOut = async () => {
-    await logout();
-    queryClient.refetchQueries({ queryKey: ["me"] });
-    toast({
-      title: "Good Bye",
-      description: "See Ya",
-      status: "success",
-      position: "top",
-      isClosable: true,
-    });
-    // toast.update(toastId, { status: "error", title: "DONE" });
+  // const logOut = async () => {
+  //   await logout();
+  //   queryClient.refetchQueries({ queryKey: ["me"] });
+  //   toast({
+  //     title: "Good Bye",
+  //     description: "See Ya",
+  //     status: "success",
+  //     position: "top",
+  //     isClosable: true,
+  //   });
+  //   // toast.update(toastId, { status: "error", title: "DONE" });
+  // };
+  const mutation = useMutation({
+    mutationFn: logout,
+    onMutate: () => {
+      toastId.current = toast({
+        title: "log out",
+        description: "bye bye",
+        status: "loading",
+        position: "bottom-right",
+      });
+    },
+    onSuccess: (data: any) => {
+      if (toastId.current) {
+        queryClient.refetchQueries({ queryKey: ["me"] });
+        toast.update(toastId.current, {
+          status: "success",
+          title: "Done",
+          description: "See you laster",
+        });
+      }
+    },
+    onError: (error: any) => {},
+  });
+  const onLogOut = async () => {
+    mutation.mutate();
   };
   return (
     <>
@@ -94,7 +122,7 @@ export default function Header() {
                   <Avatar name={user.name} src={user.avator} size={"sm"} />
                 </MenuButton>
                 <MenuList>
-                  <MenuItem onClick={logOut}>Log out</MenuItem>
+                  <MenuItem onClick={onLogOut}>Log out</MenuItem>
                 </MenuList>
               </Menu>
             )
