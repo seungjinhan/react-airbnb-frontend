@@ -78,3 +78,9 @@ export const usernameLogin = ({
       },
     }
   );
+
+export const getAmenities = () =>
+  call.get(`rooms/amenities`).then((res) => res.data);
+
+export const getCategories = () =>
+  call.get(`categories`).then((res) => res.data);
